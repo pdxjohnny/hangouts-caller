@@ -16,7 +16,7 @@ RUN apt-get update -y && \
     chown ${uid}:${gid} -R /home/developer
 
 RUN apt-get update -y && \
-    apt-get install -y python-pil && \
+    apt-get install -y python-pil scrot && \
     apt-get clean && \
     rm -rf /var/cache/apt/*
 
