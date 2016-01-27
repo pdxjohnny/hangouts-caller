@@ -1,8 +1,41 @@
 import sys
 import time
+import thread
 import pyautogui
+import subprocess
+
+import states
 
 TYPE_INTERVAL = 0.05
+
+def notify_browser_started(connection):
+    '''
+    Sleeps for a while to ensure the browser will be set up. Then notifys caller
+    object that it is ready to login.
+    '''
+    # Sleep
+    time.sleep(10)
+    # Notify that we are ready to login.
+    connection.set_state(states.LOGIN)
+
+def start_browser(connection):
+    '''
+    Starts firefox at hangouts.google.com then returns the process handle. It
+    also starts a thread that will notify the main thread via the websocket. It
+    sends a message which is echoed back to the socket. Which tells it the
+    browser is ready for use.
+    '''
+    # Argumments for starting the browser
+    args = [
+        '/usr/bin/firefox',
+        'https://accounts.google.com/ServiceLogin?continue=https://hangouts.google.com'
+    ]
+    # Start the browser
+    process = subprocess.Popen(args)
+    # Notify when startup is complete
+    thread.start_new_thread(notify_browser_started, (connection,))
+    # Return a handle on the browser process
+    return process
 
 def navigate(url):
     # Go to google hangouts
@@ -65,6 +98,3 @@ def main():
     pyautogui.click()
     time.sleep(1)
     callnumber(sys.argv[3])
-
-if __name__ == '__main__':
-    main()
