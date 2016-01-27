@@ -16,7 +16,7 @@ def notify_browser_started(connection):
     object that it is ready to login.
     '''
     # Sleep
-    time.sleep(10)
+    time.sleep(30)
     # Notify that we are ready to login.
     connection.set_state(states.LOGIN)
 
