@@ -62,13 +62,10 @@ class Caller(object):
             print message
 
     def on_state_end_call(self, message):
-        print 'Called on_state_make_call'
-        if 'number' in message:
-            print 'Calling', message['number']
-            hangouts.callnumber(message['number'])
-        else:
-            print 'on_state_make_call did not receive a number to call'
-            print message
+        # Hangup the current call
+        hangouts.hangup()
+        # No call active so we are ready to make calls again
+        self.set_state(states.READY)
 
     def on_message(self, ws, message):
         print "Got message:", message

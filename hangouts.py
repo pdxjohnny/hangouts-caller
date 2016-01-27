@@ -101,12 +101,19 @@ def callsetup():
     pyautogui.moveRel(0, 350)
     pyautogui.click()
     time.sleep(1)
-    location = pyautogui.locateOnScreen('hangouts-search.png')
-    if location is None:
-        print'Could not find hangouts search input area'
-        return
-    location_x, location_y = pyautogui.center(location)
-    pyautogui.click(location_x, location_y)
+    # Hangouts rotates through a few lines of text in its search bar
+    # any of them coudl be displayed so check them all and click if found
+    search_bar_options = [
+        'hangouts-search.png', \
+        'hangouts-search-2.png'
+    ]
+    for option in search_bar_options:
+        location = pyautogui.locateOnScreen(option)
+        if location is None:
+            print'Could not find ' + option + ' input area'
+            continue
+        location_x, location_y = pyautogui.center(location)
+        pyautogui.click(location_x, location_y)
     time.sleep(1)
 
 def callnumber(number):
@@ -122,6 +129,14 @@ def callnumber(number):
     pyautogui.click(location_x, location_y)
     time.sleep(1)
 
+def hangup():
+    location = pyautogui.locateOnScreen('hangup.png')
+    if location is None:
+        assert False, 'Could not find hangup button'
+        return
+    location_x, location_y = pyautogui.center(location)
+    pyautogui.click(location_x, location_y)
+    time.sleep(3)
 
 def main():
     sign_in(sys.argv[1], sys.argv[2])
