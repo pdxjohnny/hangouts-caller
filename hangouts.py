@@ -1,5 +1,7 @@
+import os
 import sys
 import time
+import shutil
 import thread
 import pyautogui
 import subprocess
@@ -25,6 +27,13 @@ def start_browser(connection):
     sends a message which is echoed back to the socket. Which tells it the
     browser is ready for use.
     '''
+    # Remove all firefox settings so we get a clean start
+    path_to = os.path.expanduser(os.path.join('~', '.mozilla'))
+    try:
+        shutil.rmtree(path_to)
+    except:
+        # If we can't remove it its because its not there so dont worry
+        pass
     # Argumments for starting the browser
     args = [
         '/usr/bin/firefox',
@@ -61,6 +70,7 @@ def allow_plugin_always():
     time.sleep(0.5)
     pyautogui.moveTo(button_center[0] + 220, button_center[1] + 110)
     pyautogui.click()
+    time.sleep(2)
 
 def click_sign_in():
     # Sign in
@@ -77,24 +87,46 @@ def sign_in(email, password):
     time.sleep(3)
     pyautogui.typewrite(password, interval=TYPE_INTERVAL)
     pyautogui.press('enter')
+    time.sleep(3)
+
+def callsetup():
+    location = pyautogui.locateOnScreen('hangouts-in-address-bar.png')
+    if location is None:
+        print'Could not find hangouts.google.com in the address bar'
+        return
+    location_x, location_y = pyautogui.center(location)
+    pyautogui.moveTo(location_x, location_y)
+    time.sleep(0.5)
+    # Click to remove the remember password dialoge
+    pyautogui.moveRel(0, 350)
+    pyautogui.click()
+    time.sleep(1)
+    location = pyautogui.locateOnScreen('hangouts-search.png')
+    if location is None:
+        print'Could not find hangouts search input area'
+        return
+    location_x, location_y = pyautogui.center(location)
+    pyautogui.click(location_x, location_y)
     time.sleep(1)
 
 def callnumber(number):
+    callsetup()
     pyautogui.typewrite(number, interval=TYPE_INTERVAL) # type with quarter-second pause in between each key
-    pyautogui.press('enter')
+    # pyautogui.press('enter')
     time.sleep(1)
     location = pyautogui.locateOnScreen('call-button.png')
     if location is None:
         assert False, 'Could not find call button'
-    pyautogui.moveTo(location[0] + (location[2] / 2), location[1] + (location[3] / 2))
-    pyautogui.click()
+        return
+    location_x, location_y = pyautogui.center(location)
+    pyautogui.click(location_x, location_y)
+    time.sleep(1)
+
 
 def main():
     sign_in(sys.argv[1], sys.argv[2])
     time.sleep(10)
     allow_plugin_always()
     time.sleep(5)
-    pyautogui.moveRel(0, 20)
-    pyautogui.click()
-    time.sleep(1)
+    callsetup()
     callnumber(sys.argv[3])

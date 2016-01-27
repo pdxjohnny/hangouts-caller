@@ -1,4 +1,5 @@
 import json
+import time
 import urllib2
 import websocket
 
@@ -39,8 +40,36 @@ class Caller(object):
 
     def on_state_login(self, message):
         print 'Called on_state_login'
-        hangouts.sign_in(self.gmail_user, self.gmail_pass)
-    
+        # We are on the login screen
+        hangouts.sign_in(self.gmail_username, self.gmail_password)
+        # Wait for the hangouts page to load
+        time.sleep(10)
+        # Allow the hangouts plugin
+        hangouts.allow_plugin_always()
+        # Now we are ready to make calls
+        self.set_state(states.READY)
+
+    def on_state_ready(self, message):
+        print 'Called on_state_ready'
+
+    def on_state_make_call(self, message):
+        print 'Called on_state_make_call'
+        if 'number' in message:
+            print 'Calling', message['number']
+            hangouts.callnumber(message['number'])
+        else:
+            print 'on_state_make_call did not receive a number to call'
+            print message
+
+    def on_state_end_call(self, message):
+        print 'Called on_state_make_call'
+        if 'number' in message:
+            print 'Calling', message['number']
+            hangouts.callnumber(message['number'])
+        else:
+            print 'on_state_make_call did not receive a number to call'
+            print message
+
     def on_message(self, ws, message):
         print "Got message:", message
         data = {}
@@ -49,13 +78,14 @@ class Caller(object):
         except Exception as e:
             print 'Error while decoding message into json', e
         if 'state' in data:
+            self.state = data['state']
             method = hasattr(self, 'on_state_'+data['state'])
             if method != False:
                 method = getattr(self, 'on_state_'+data['state'])
                 try:
                     method(data)
                 except Exception as e:
-                    print 'While trying to call method', e 
+                    print 'While trying to call method', e
         elif 'set' in data and 'value' in data:
             setattr(self, data['set'], data['value'])
             print getattr(self, data['set'])
@@ -77,13 +107,15 @@ class Caller(object):
         print "Connection opened"
         self.set_state(self.state)
 
-    def set_state(self, state):
+    def set_state(self, state, message={}):
         self.state = state
         if self.ws != False:
             try:
-                self.ws.send(json.dumps({
+                data = {
                     'state': state
-                }))
+                }
+                data.update(message)
+                self.ws.send(json.dumps(data))
             except Exception as e:
                 print 'Could not update server of state'
                 print e
