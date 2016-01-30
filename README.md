@@ -2,13 +2,15 @@ Requirements
 ---
 
 ```bash
-sudo -E apt-get -y install firefox wget libv4l-0 libpango1.0-0 \
-  python python-dev python-pip python-xlib python-tk python-pil scrot && \
+apt-get -y install firefox wget libv4l-0 libpango1.0-0 \
+  python python-dev python-pip python-xlib python-tk python-pil scrot \
+  libtiff5-dev libjpeg8-dev zlib1g-dev libfreetype6-dev liblcms2-dev \
+  libwebp-dev tcl8.6-dev tk8.6-dev && \
 wget https://dl.google.com/linux/direct/google-talkplugin_current_amd64.deb && \
-sudo -E dpkg -i google-talkplugin_current_amd64.deb && \
+dpkg -i google-talkplugin_current_amd64.deb && \
 rm -rf google-talkplugin_current_amd64.deb && \
-sudo -E pip install -U pip && \
-sudo -E pip install -r requirements.txt
+pip install -U pip && \
+pip install pyautogui websocket-client
 ```
 
 Usage
