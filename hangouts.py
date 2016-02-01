@@ -45,7 +45,8 @@ def start_browser(connection):
         'https://accounts.google.com/ServiceLogin?continue=https://hangouts.google.com'
     ]
     # Start the browser
-    process = subprocess.Popen(args)
+    DEVNULL = open(os.devnull, 'wb')
+    process = subprocess.Popen(args, stdout=DEVNULL, stderr=STDOUT)
     # Notify when startup is complete
     thread.start_new_thread(notify_browser_started, (connection,))
     # Return a handle on the browser process
@@ -55,7 +56,7 @@ def allow_plugin_always():
     location = pyautogui.locateOnScreen(image('allow-plugin.png'))
     if location is None:
         print'Could not find plugin button'
-        return
+        return False
     button_center = (location[0] + (location[2] / 2), \
         location[1] + (location[3] / 2))
     pyautogui.moveTo(button_center[0], button_center[1])
@@ -96,8 +97,8 @@ def callnumber(number):
     time.sleep(1)
     location = pyautogui.locateOnScreen(image('call-button.png'))
     if location is None:
-        assert False, 'Could not find call button'
-        return
+        print 'Could not find call button'
+        return False
     location_x, location_y = pyautogui.center(location)
     pyautogui.click(location_x, location_y)
     time.sleep(1)
@@ -105,8 +106,8 @@ def callnumber(number):
 def hangup():
     location = pyautogui.locateOnScreen(image('hangup.png'))
     if location is None:
-        assert False, 'Could not find hangup button'
-        return
+        print 'Could not find hangup button'
+        return False
     location_x, location_y = pyautogui.center(location)
     pyautogui.click(location_x, location_y)
     time.sleep(3)
