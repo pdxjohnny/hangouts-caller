@@ -46,7 +46,7 @@ def start_browser(connection):
     ]
     # Start the browser
     DEVNULL = open(os.devnull, 'wb')
-    process = subprocess.Popen(args, stdout=DEVNULL, stderr=STDOUT)
+    process = subprocess.Popen(args, stdout=DEVNULL, stderr=subprocess.STDOUT)
     # Notify when startup is complete
     thread.start_new_thread(notify_browser_started, (connection,))
     # Return a handle on the browser process
