@@ -114,8 +114,8 @@ def callsetup():
     # Hangouts rotates through a few lines of text in its search bar
     # any of them coudl be displayed so check them all and click if found
     search_bar_options = [
-        image('hangouts-search.png'), \
-        image('hangouts-search-2.png')
+        image('hangouts-search-2.png'), \
+        image('hangouts-search.png')
     ]
     for option in search_bar_options:
         location = pyautogui.locateOnScreen(option)

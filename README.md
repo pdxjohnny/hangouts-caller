@@ -16,12 +16,10 @@ pip install pyautogui websocket-client
 Usage
 ---
 
+You need to change the environment variables set in `env`. You can use this to
+set the proxies and you MUST set the call center host. Then build the image.
+
 ```bash
 docker build -t pdxjohnny/hangouts-caller .
-docker run --rm -it -v /tmp/.X11-unix:/tmp/.X11-unix \
-  -v /home/developer/hangouts-caller:$PWD \
-  -e DISPLAY=$DISPLAY  pdxjohnny/hangouts-caller
-
-HANGOUTS_CALL_CENTER_HOST=ws://localhost:8080/api/caller \
-  python contact-call-center.py
+docker run --rm -ti -p 5901:5901 pdxjohnny/hangouts-caller
 ```
