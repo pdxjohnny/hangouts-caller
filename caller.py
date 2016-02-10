@@ -43,7 +43,7 @@ class Caller(object):
         # We are on the login screen
         hangouts.sign_in(self.gmail_username, self.gmail_password)
         # Wait for the hangouts page to load
-        time.sleep(10)
+        time.sleep(15)
         # Allow the hangouts plugin
         hangouts.allow_plugin_always()
         # Now we are ready to make calls

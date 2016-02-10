@@ -1,0 +1,22 @@
+#!/bin/sh
+
+# This file is sourced so that everything else that is run has access to the
+# environment variables defined here
+
+# Set any proxies here
+# export PROXY_HOST="\"proxyhost\""
+# export PROXY_PORT="1080"
+# export http_proxy="https://proxyhost:1080"
+# export HTTP_PROXY="$http_proxy"
+# export https_proxy="https://proxyhost:1081"
+# export HTTPS_PROXY="$https_proxy"
+
+# Set these to connect to the call center
+# export HANGOUTS_CALL_CENTER_HOSTNAME="192.168.1.1"
+# export HANGOUTS_CALL_CENTER_HOST="http://${HANGOUTS_CALL_CENTER_HOSTNAME}:8080"
+# export HANGOUTS_CALL_CENTER_USERNAME=""
+# export HANGOUTS_CALL_CENTER_PASSWORD=""
+
+# You probaly are running the call center behind the proxy too so make sure not
+# to proxy to it
+# export no_proxy="$no_proxy,$HANGOUTS_CALL_CENTER_HOSTNAME"

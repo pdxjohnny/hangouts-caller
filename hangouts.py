@@ -21,7 +21,7 @@ def notify_browser_started(connection):
     object that it is ready to login.
     '''
     # Sleep
-    time.sleep(30)
+    time.sleep(20)
     # Notify that we are ready to login.
     connection.set_state(states.LOGIN)
 
@@ -39,13 +39,49 @@ def start_browser(connection):
     except:
         # If we can't remove it its because its not there so dont worry
         pass
+    # Create a new profile with the settings from prefs.js
+    path_to = os.path.expanduser(os.path.join('~', 'caller.profile'))
+    args = [
+        'firefox',
+        '-CreateProfile',
+        'caller ' + path_to
+    ]
+    print "Going to create profile"
+    return_status = subprocess.call(args)
+    print "Profile created"
     # Argumments for starting the browser
     args = [
-        '/usr/bin/firefox',
+        'firefox',
+        '-P',
+        'caller',
+        '-setDefaultBrowser',
         'https://accounts.google.com/ServiceLogin?continue=https://hangouts.google.com'
     ]
     # Start the browser
     DEVNULL = open(os.devnull, 'wb')
+    print "Starting firefox"
+    process = subprocess.Popen(args, stdout=DEVNULL, stderr=subprocess.STDOUT)
+    print "Started firefox"
+    # We need to start firefox and then kill it so it can generate the prefs
+    # file which we append the proxies to
+    time.sleep(15)
+    print "Stopping firefox"
+    process.kill()
+    try:
+        # This opens prefs.js in this direcotry and appends it to the prefs.js
+        # of the caller profile we just created
+        with open('prefs.js', 'rb') as prefs:
+            with open(os.path.join(path_to, 'prefs.js'), 'a') as profile:
+                print "Appending to prefs.js"
+                for line in prefs:
+                    for env_var in os.environ:
+                        if 'proxy' in env_var.lower():
+                            line = line.replace(env_var, os.environ[env_var])
+                    profile.write(line)
+                    print line.strip()
+    except Exception as e:
+        print e
+    print "Starting firefox"
     process = subprocess.Popen(args, stdout=DEVNULL, stderr=subprocess.STDOUT)
     # Notify when startup is complete
     thread.start_new_thread(notify_browser_started, (connection,))
@@ -88,6 +124,7 @@ def callsetup():
             continue
         location_x, location_y = pyautogui.center(location)
         pyautogui.click(location_x, location_y)
+        break
     time.sleep(1)
 
 def callnumber(number):

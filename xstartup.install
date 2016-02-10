@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# Load any env variables
+source ${HOME}/hangouts-caller/env
+
+xrdb $HOME/.Xresources
+
+# Make sure we go the the right direcotry
+cd ${HOME}/hangouts-caller
+# Install all the needed packages (pyautogui need to be in X to install)
+pip install --user -r requirements.txt

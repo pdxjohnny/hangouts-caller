@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# Load any env variables
+source ${HOME}/hangouts-caller/env
+
+xrdb $HOME/.Xresources
+
+# Make sure we go the the right direcotry
+cd ${HOME}/hangouts-caller
+# Start the startup script
+python contact-call-center.py 1>&2 | tee ${PWD}/log.log &
+
+# Start the window manger
+dwm
