@@ -1,3 +1,7 @@
+# Hangouts Caller
+
+It's a server that listens for requests (call center) and spins up containers running firefox that get VNC automated to click where it needs to in order to make hangouts.google.com call a phone number. The client (caller) talks to the server.
+
 Requirements
 ---
 
